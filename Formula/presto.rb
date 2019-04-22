@@ -1,100 +1,19 @@
 class Presto < Formula
   desc "Distributed SQL query engine for big data"
   homepage "https://prestodb.io"
-  url "https://search.maven.org/remotecontent?filepath=com/facebook/presto/presto-server/0.218/presto-server-0.218.tar.gz"
-  sha256 "ec06af1e5c2856bfba8fdb86f30ab841296556e903d175989e7bd39c33d29b18"
+  url "https://search.maven.org/remotecontent?filepath=io/prestosql/presto-cli/308/presto-cli-308-executable.jar"
+  version "308"
+  sha256 "fd5440880f48a0d70a49de5b9959ee79ff7bd72bcaf48bcf55118ffca2141e25"
 
   bottle :unneeded
 
   depends_on :java => "1.8+"
 
-  resource "presto-cli" do
-    url "https://search.maven.org/remotecontent?filepath=com/facebook/presto/presto-cli/0.218/presto-cli-0.218-executable.jar"
-    sha256 "3bdaa697e4a695868186286d0048eb674fdd614bd975b3bd1a7b09d740fc162d"
-  end
-
   def install
-    libexec.install Dir["*"]
-
-    (libexec/"etc/node.properties").write <<~EOS
-      node.environment=production
-      node.id=ffffffff-ffff-ffff-ffff-ffffffffffff
-      node.data-dir=#{var}/presto/data
-    EOS
-
-    (libexec/"etc/jvm.config").write <<~EOS
-      -server
-      -Xmx16G
-      -XX:+UseG1GC
-      -XX:G1HeapRegionSize=32M
-      -XX:+UseGCOverheadLimit
-      -XX:+ExplicitGCInvokesConcurrent
-      -XX:+HeapDumpOnOutOfMemoryError
-      -XX:+ExitOnOutOfMemoryError
-    EOS
-
-    (libexec/"etc/config.properties").write <<~EOS
-      coordinator=true
-      node-scheduler.include-coordinator=true
-      http-server.http.port=8080
-      query.max-memory=5GB
-      query.max-memory-per-node=1GB
-      discovery-server.enabled=true
-      discovery.uri=http://localhost:8080
-    EOS
-
-    (libexec/"etc/log.properties").write "com.facebook.presto=INFO"
-
-    (libexec/"etc/catalog/jmx.properties").write "connector.name=jmx"
-
-    (bin/"presto-server").write <<~EOS
-      #!/bin/bash
-      exec "#{libexec}/bin/launcher" "$@"
-    EOS
-
-    resource("presto-cli").stage do
-      bin.install "presto-cli-#{version}-executable.jar" => "presto"
-    end
-  end
-
-  def post_install
-    (var/"presto/data").mkpath
-  end
-
-  def caveats; <<~EOS
-    Add connectors to #{libexec}/etc/catalog/. See:
-    https://prestodb.io/docs/current/connector.html
-  EOS
-  end
-
-  plist_options :manual => "presto-server run"
-
-  def plist; <<~EOS
-    <?xml version="1.0" encoding="UTF-8"?>
-    <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
-    "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-    <plist version="1.0">
-      <dict>
-        <key>Label</key>
-        <string>#{plist_name}</string>
-        <key>RunAtLoad</key>
-        <true/>
-        <key>AbandonProcessGroup</key>
-        <true/>
-        <key>WorkingDirectory</key>
-        <string>#{opt_libexec}</string>
-        <key>ProgramArguments</key>
-        <array>
-          <string>#{opt_bin}/presto-server</string>
-          <string>run</string>
-        </array>
-      </dict>
-    </plist>
-  EOS
+    bin.install "presto-cli-#{version}-executable.jar" => "presto"
   end
 
   test do
-    system bin/"presto-server", "run", "--help"
     assert_equal "Presto CLI #{version}", shell_output("#{bin}/presto --version").chomp
   end
 end
