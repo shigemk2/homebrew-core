@@ -1,14 +1,14 @@
 class Procs < Formula
   desc "Modern replacement for ps written by Rust"
   homepage "https://github.com/dalance/procs"
-  url "https://github.com/dalance/procs/archive/v0.9.5.tar.gz"
-  sha256 "d77245acea18ef18308d164f06fa299ddc433bc13006c6d5a9239fee87a4ce21"
+  url "https://github.com/dalance/procs/archive/v0.9.9.tar.gz"
+  sha256 "414b40fc56ee57dda7ba8b07d8cecd6811cf702474c9f1c922a619ee5d597223"
 
   bottle do
     cellar :any_skip_relocation
-    sha256 "a2ac131640c53bce4a285749e10bc9493528d4a6df800d80cc3376bce592496f" => :catalina
-    sha256 "3fa35891e7014ffc62b3424006a3a84c74240337ef5763aa31b26d8157a2a953" => :mojave
-    sha256 "df67246f12cc23c1c21ef8cb51f03107f35ea50e95281e98bedc9f0cc58de21b" => :high_sierra
+    sha256 "f43cd5f17fa8d659188dff477d69c10a50479eca520c17cfe190a25fad5926ad" => :catalina
+    sha256 "2ce05fdab15480591d1bbabf707cb55d296fdb3a20af677462766244b40685d0" => :mojave
+    sha256 "a0ce443d5458aa0c12416f199103bb5d80768e71e14eff3e4189b6c01c5a245d" => :high_sierra
   end
 
   depends_on "rust" => :build

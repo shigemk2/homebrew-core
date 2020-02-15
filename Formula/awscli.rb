@@ -4,15 +4,14 @@ class Awscli < Formula
   desc "Official Amazon AWS command-line interface"
   homepage "https://aws.amazon.com/cli/"
   # awscli should only be updated every 10 releases on multiples of 10
-  url "https://github.com/aws/aws-cli/archive/1.17.9.tar.gz"
-  sha256 "d36925052eafa989b071c37d3deb082957381643a2aad0c4a64facd428e1c290"
-  head "https://github.com/aws/aws-cli.git", :branch => "develop"
+  url "https://github.com/aws/aws-cli/archive/2.0.0.tar.gz"
+  sha256 "c6064a4419432cfae0a7866a7ab08ab2b2a686c6452ddac1369a45a3cf003c7e"
+  head "https://github.com/aws/aws-cli.git", :branch => "v2"
 
   bottle do
-    cellar :any_skip_relocation
-    sha256 "37a440efce1df4fb81c021b231871cd9788046a3f17f83bc4254a2f15d4797ce" => :catalina
-    sha256 "86fdc3092d701dcca89ef858b6db02e418d374ced3de7a8226b02f41559acb43" => :mojave
-    sha256 "2b0d3bd2dadd77657686e96071f4187457ecb2d60cd43a6b2b601f1994b55105" => :high_sierra
+    sha256 "3033f2cccdaa092b04280859f72b510cab3d680e4b86eaa626ffccdcbfe9790c" => :catalina
+    sha256 "10584b5630f3247ecea6cc68b2b3f74ed3b4d165ced46a7646e1b7a02e98db48" => :mojave
+    sha256 "d9360809cb789c75c9b379564a8168d7f41baa052d14062473bdbc119077435b" => :high_sierra
   end
 
   # Some AWS APIs require TLS1.2, which system Python doesn't have before High
@@ -21,7 +20,7 @@ class Awscli < Formula
 
   def install
     venv = virtualenv_create(libexec, "python3")
-    system libexec/"bin/pip", "install", "-v", "--no-binary", ":all:",
+    system libexec/"bin/pip", "install", "-v", "-r", "requirements.txt",
                               "--ignore-installed", buildpath
     system libexec/"bin/pip", "uninstall", "-y", "awscli"
     venv.pip_install_and_link buildpath
